@@ -560,7 +560,7 @@ class Tune(object):
             h[info_keys[key].name] = data
         self.header = h
         self.reference = h['reference number']
-        self.title = h['tune title']
+        self.title = h['tune title'] if 'tune title' in h else ""
         self.key = h['key']
             
     def parse_tune(self, tune):
