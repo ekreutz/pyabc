@@ -135,6 +135,8 @@ class Key(object):
         if m is None:
             raise ValueError('Invalid key "%s"' % key)
         base, acc, mode, extra = m.groups()
+        if mode == 'm':
+            mode = 'minor'
         if acc is None:
             acc = ''
         if mode is None:
@@ -293,12 +295,14 @@ class Pitch(object):
 
 class TimeSignature(object):
     def __init__(self, meter, unit_len, tempo=None):
-        self._meter = [int(x) for x in meter.split('/')]
+        self._meter_str = meter
+        if meter != 'free':
+            self._meter = [int(x) for x in meter.split('/')]
         self._unit_len = [int(x) for x in unit_len.split('/')]
         self._tempo = tempo
 
     def __repr__(self):
-        return "<TimeSignature %d/%d>" % tuple(self._meter)
+        return "<TimeSignature %s>" % tuple(self._meter_str)
 
 
 # Decoration symbols from
@@ -581,7 +585,7 @@ class Tune(object):
         
         tokens = []
         for i,line in enumerate(tune):
-            print(line)
+            # print(line)
             line = line.rstrip()
             
             if len(line) > 2 and line[1] == ':' and (line[0] == '+' or line[0] in tune_body_fields):
@@ -725,7 +729,7 @@ class Tune(object):
                     continue
 
                 # Chord symbol
-                m = re.match(r'"[\w#/]+"', part)
+                m = re.match(r'"[\w#/(),+]+"', part)
                 if m is not None:
                     tokens.append(ChordSymbol(line=i, char=j, text=m.group()))
                     j += m.end()
