@@ -579,6 +579,8 @@ class Tune(object):
                 unit = "1/16"
             else:
                 unit = "1/8"
+        if unit is None:
+            unit = "1/16"
         tempo = self.header.get('tempo', None)
         time_sig = TimeSignature(meter, unit, tempo)
 
